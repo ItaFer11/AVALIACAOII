@@ -1,0 +1,184 @@
+
+Atividade Avaliativa 2 - CRUD de Nomes
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_REGISTROS 50
+#define MAX_LETRAS 30
+
+char banco_dados[MAX_REGISTROS][MAX_LETRAS];
+
+/* Função para buscar um nome */
+int buscarNome(char nome[]) {
+    int i;
+
+    for (i = 0; i < MAX_REGISTROS; i++) {
+        if (strcmp(banco_dados[i], nome) == 0) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+/* Função para incluir um nome */
+void incluirNome() {
+    char nome[MAX_LETRAS];
+    int i;
+
+    printf("Digite o nome: ");
+    scanf(" %[^\n]", nome);
+
+    if (buscarNome(nome) != -1) {
+        printf("Erro: Nome ja existe. Digite um nome unico!\n");
+        return;
+    }
+
+    for (i = 0; i < MAX_REGISTROS; i++) {
+        if (banco_dados[i][0] == '\0') {
+            strcpy(banco_dados[i], nome);
+            printf("Nome cadastrado com sucesso!\n");
+            return;
+        }
+    }
+
+    printf("Erro: Banco de dados cheio!\n");
+}
+
+/* Função para buscar e mostrar resultado */
+void pesquisarNome() {
+    char nome[MAX_LETRAS];
+    int posicao;
+
+    printf("Digite o nome para buscar: ");
+    scanf(" %[^\n]", nome);
+
+    posicao = buscarNome(nome);
+
+    if (posicao != -1) {
+        printf("Nome encontrado no indice %d.\n", posicao);
+    } else {
+        printf("Nome nao encontrado.\n");
+    }
+}
+
+/* Função para modificar nome */
+void modificarNome() {
+    char nomeAntigo[MAX_LETRAS];
+    char nomeNovo[MAX_LETRAS];
+    int posicao;
+
+    printf("Digite o nome que deseja alterar: ");
+    scanf(" %[^\n]", nomeAntigo);
+
+    posicao = buscarNome(nomeAntigo);
+
+    if (posicao == -1) {
+        printf("Nome nao encontrado.\n");
+        return;
+    }
+
+    printf("Digite o novo nome: ");
+    scanf(" %[^\n]", nomeNovo);
+
+    if (buscarNome(nomeNovo) != -1) {
+        printf("Erro: Esse nome ja existe no sistema.\n");
+        return;
+    }
+
+    strcpy(banco_dados[posicao], nomeNovo);
+
+    printf("Nome alterado com sucesso!\n");
+}
+
+/* Função para apagar nome */
+void apagarNome() {
+    char nome[MAX_LETRAS];
+    int posicao;
+
+    printf("Digite o nome que deseja apagar: ");
+    scanf(" %[^\n]", nome);
+
+    posicao = buscarNome(nome);
+
+    if (posicao == -1) {
+        printf("Nome nao encontrado.\n");
+        return;
+    }
+
+    banco_dados[posicao][0] = '\0';
+
+    printf("Nome removido com sucesso!\n");
+}
+
+/* Função para listar todos os nomes */
+void listarNomes() {
+    int i;
+    int encontrou = 0;
+
+    printf("\n===== LISTA DE NOMES =====\n");
+
+    for (i = 0; i < MAX_REGISTROS; i++) {
+        if (banco_dados[i][0] != '\0') {
+            printf("Indice %d -> %s\n", i, banco_dados[i]);
+            encontrou = 1;
+        }
+    }
+
+    if (!encontrou) {
+        printf("Nenhum nome cadastrado.\n");
+    }
+}
+
+/* Programa principal */
+int main() {
+    int opcao;
+
+    do {
+        printf("\n");
+        printf("=========== MENU ===========\n");
+        printf("1 - Incluir nome\n");
+        printf("2 - Buscar nome\n");
+        printf("3 - Modificar nome\n");
+        printf("4 - Apagar nome\n");
+        printf("5 - Listar todos\n");
+        printf("0 - Sair\n");
+        printf("============================\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                incluirNome();
+                break;
+
+            case 2:
+                pesquisarNome();
+                break;
+
+            case 3:
+                modificarNome();
+                break;
+
+            case 4:
+                apagarNome();
+                break;
+
+            case 5:
+                listarNomes();
+                break;
+
+            case 0:
+                printf("Encerrando programa...\n");
+                break;
+
+            default:
+                printf("Opcao invalida!\n");
+        }
+
+    } while (opcao != 0);
+
+    return 0;
+}
+
